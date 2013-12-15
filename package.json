@@ -1,13 +1,13 @@
 {
-  "name": "coming-soon",
+  "name": "templebar",
   "preferGlobal": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Davide Bonapersona <me@davb.me>",
   "description": "a compact template engine for CoffeeScript",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/davb/coming-soon.git"
+    "url": "https://github.com/davb/templebar.git"
   },
   "keywords": [
     "template",
@@ -17,7 +17,11 @@
   "analyze": false,
   "devDependencies": {
     "mocha": "~1.15.1",
-    "chai": "~1.8.1"
+    "chai": "~1.8.1",
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-clean": "~0.5.0"
   },
   "license": "MIT",
   "engines": {
