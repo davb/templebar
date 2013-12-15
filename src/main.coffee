@@ -58,7 +58,7 @@ HTML_VOID_TAGS = 'area base br col embed hr img input keygen link menuitem meta 
 
 
 # constructor takes Underscore/Lodash as an argument
-module.exports = (_) ->
+constructor = (_) ->
 
   # alias frequently used _ functions
   is_array = _.isArray
@@ -304,6 +304,7 @@ module.exports = (_) ->
 
   # shorthands for common HTML tags
   T.d = T.div
+  T.btn = T.button
 
   # map function
   T.$map = T.$m = (array, f) ->
@@ -332,5 +333,13 @@ module.exports = (_) ->
   T.$closure = T.$c = (names, f, context) ->
     f.apply context ? @, map(names.split(' '), (n) -> T[n])
 
-  # export main object
+  # return main object T
   T
+
+# if AMD, define as a module with `lodash` dependency
+(typeof define == 'function') && define.amd && define('templebar',
+  ['lodash'], constructor)
+
+# export constructor function and return it
+return (typeof module != 'undefined') && (module.exports = constructor) ||
+  constructor
