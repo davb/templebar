@@ -3,7 +3,7 @@
 ---
 
 Templebar is a compact and fast templating engine for Javascript and
-Coffeescript.
+CoffeeScript.
 
 It has a concise and intuitive syntax inspired by [HAML](http://haml.info/),
 weighs only 4KB (uncompressed), and lets you write good-looking templates that behave nicely when minified.
@@ -11,8 +11,8 @@ weighs only 4KB (uncompressed), and lets you write good-looking templates that b
 
 ## Usage
 
-Templebar currently requires [Lodash](http://lodash.com/) and an
-AMD loader such as [Requirejs](http://requirejs.org/).
+Templebar currently requires [Lo-Dash](http://lodash.com/) and an
+AMD loader such as [RequireJS](http://requirejs.org/).
 
 Just grab the minified JS from this repository, bundle it with your app,
 and `require` it (it will look for a module named `"lodash"`):
