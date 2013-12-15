@@ -1,0 +1,26 @@
+{
+  "name": "coming-soon",
+  "preferGlobal": true,
+  "version": "0.0.1",
+  "author": "Davide Bonapersona <me@davb.me>",
+  "description": "a compact template engine for CoffeeScript",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davb/coming-soon.git"
+  },
+  "keywords": [
+    "template",
+    "coffee script"
+  ],
+  "dependencies": {},
+  "analyze": false,
+  "devDependencies": {
+    "mocha": "~1.15.1",
+    "chai": "~1.8.1"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
