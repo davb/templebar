@@ -297,15 +297,16 @@ module.exports = (_) ->
 
   # map function
   T.$map = T.$m = (array, f) ->
-    template_array = map(array, f)
-    (template_data) ->
-      evaluate template_array, template_data
+    array = result_defer array
+    g = (template_data) ->
+      evaluate map(result(array, template_data), f), template_data
+    if is_deferred(array) then defer g else g
 
   # variable placeholder
   T.$var = T.$v = (path, html_safe) ->
     defer (template_data) ->
       value = get_at_path path, template_data
-      !html_safe && escape_html(value) || value
+      !html_safe && is_string(value) && escape_html(value) || value
 
   # scope selector
   T.$with = T.$w = (path, template) ->

@@ -66,6 +66,9 @@ it 'passes each element to the callback function', ->
 it 'is aliased as $m', ->
   T.$map([1,2], (i) -> T.p(i))().should.equal T.$m([1,2], (i) -> T.p(i))()
 
+it 'supports array from template data', ->
+  temp = T.ul T.$map T.$v('ids'), (id) -> T.br({id: id})
+  temp({ids: [1,2]}).should.equal '<ul><br id="1"/><br id="2"/></ul>'
 
 # $var / $v
 
