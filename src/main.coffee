@@ -60,14 +60,24 @@ HTML_VOID_TAGS = 'area base br col embed hr img input keygen link menuitem meta 
 # constructor takes Underscore/Lodash as an argument
 module.exports = (_) ->
 
+  # alias frequently used _ functions
+  is_array = _.isArray
+  is_string = _.isString
+  is_function = _.isFunction
+  is_number = _.isNumber
+  is_plain_object = _.isPlainObject
+  each = _.each
+  map = _.map
+
+
   # hash to quickly check whether a HTML tag is void
   IS_VOID = {}
-  _.each HTML_VOID_TAGS, (tag) -> IS_VOID[tag] = 1
+  each HTML_VOID_TAGS, (tag) -> IS_VOID[tag] = 1
 
 
   # whether a variable is "stringifyable"
   stringifyable = (x) ->
-    _.isString(x) || _.isNumber(x)
+    is_string(x) || is_number(x)
 
 
   # push element at the back of array, joining with separator if both
@@ -91,7 +101,7 @@ module.exports = (_) ->
   # the template data, and joining the results
   #
   evaluate = (template_array, template_data, context) ->
-    _.map(template_array, (x) ->
+    map(template_array, (x) ->
       result(x, template_data, context)).join ''
 
 
@@ -102,8 +112,8 @@ module.exports = (_) ->
   # functions and stringify-able values
   concat_joining = (arrays...) ->
     buf = arrays.shift() ? []
-    _.each arrays, (array) ->
-      _.each array, (el) ->
+    each arrays, (array) ->
+      each array, (el) ->
         push_joining buf, el, ''
     buf
 
@@ -111,7 +121,7 @@ module.exports = (_) ->
   # inserts separator between elements of array
   join = (array, sep) ->
     buf = []
-    _.each array, (el, i) ->
+    each array, (el, i) ->
       push_joining buf, el, (i == 0 && '' || sep)
     buf
 
@@ -134,7 +144,7 @@ module.exports = (_) ->
     #  flatten = (obj, path) ->
     #    each_pair obj, (k, v) ->
     #      v = result_defer v
-    #      if _.isPlainObject(v)
+    #      if is_plain_object(v)
     #        flatten(v, path.concat([k]))
     #      else if stringifyable(v) || deferred(v)
     #        flat[path.join(sep)] = v
@@ -148,11 +158,11 @@ module.exports = (_) ->
       concat_joining buf, _.flatten([v]), vsep
       push_joining buf, '"'
     # at the first level, we're expecting Objects or functions
-    _.each tree, (el) ->
+    each tree, (el) ->
       el = result_defer(el)
-      if _.isArray(el)
+      if is_array(el)
         throw "unexpected Array #{el} in attributes"
-      else if _.isPlainObject(el)
+      else if is_plain_object(el)
         # plain object
         each_pair el, (k, v) ->
           v = result_defer v
@@ -161,7 +171,7 @@ module.exports = (_) ->
             acc_buf[k] ?= []
             acc_buf[k] = acc_buf[k].concat(_.flatten([v]))
           # TODO: restore this!
-          #else if k in ['data'] && _.isPlainObject(v)
+          #else if k in ['data'] && is_plain_object(v)
           #  # data: {a: 1, b: 2}
           #  each_pair flatten_object(v, '-', ['data']), add_pair_to_buffer
           else if stringifyable(v) || deferred(v)
@@ -175,7 +185,7 @@ module.exports = (_) ->
     # add accumulated parameters
     each_pair acc_buf, (k, v) ->
       vsep = {style: ';'}[k] || ' '
-      add_pair_to_buffer k, join(_.map(v, result_defer), vsep)
+      add_pair_to_buffer k, join(map(v, result_defer), vsep)
     # add unique parameters
     each_pair uniq_buf, (k, v) ->
       add_pair_to_buffer k, v unless k is 'id'
@@ -192,10 +202,10 @@ module.exports = (_) ->
   # The returned Array will only contain Strings and deferred functions.
   flatten_tree_cont = (tree) ->
     buf = []
-    _.each tree, (el) ->
-      if _.isArray(el)
+    each tree, (el) ->
+      if is_array(el)
         concat_joining buf, flatten_tree_cont(el)
-      else if stringifyable(el) || _.isFunction(el)
+      else if stringifyable(el) || is_function(el)
         push_joining buf, result_defer(el)
       else
         throw "unexpected #{typeof el} '#{el}' in node content"
@@ -241,18 +251,18 @@ module.exports = (_) ->
   normalize = (args) ->
     nf = [[], []]
     # handle special case of args[0]
-    if _.isString(arg = args[0])
+    if is_string(arg = args[0])
       attr = {}
       if (id = arg.match(/\#(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g)?[0])
         attr.id = id.slice(1)
       if (classes = arg.match(/\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g))
-        attr.class = _.map classes, (x) -> x.slice(1)
+        attr.class = map classes, (x) -> x.slice(1)
       if attr.id || attr.class
         push nf[0], attr
         args.shift()
     # handle all other arguments
-    _.each args, (arg) ->
-      if _.isPlainObject(arg) then push nf[0], arg else push nf[1], arg
+    each args, (arg) ->
+      if is_plain_object(arg) then push nf[0], arg else push nf[1], arg
     # return normalized
     nf
 
@@ -279,7 +289,7 @@ module.exports = (_) ->
     (template_data) -> evaluate template_array, template_data
 
   # attach tag helpers for all HTML tags
-  _.each HTML_VOID_TAGS.concat(HTML_NONVOID_TAGS), (tagname) ->
+  each HTML_VOID_TAGS.concat(HTML_NONVOID_TAGS), (tagname) ->
     T[tagname] = (args...) -> T.tag tagname, args...
 
   # shorthands for common HTML tags
@@ -287,7 +297,7 @@ module.exports = (_) ->
 
   # map function
   T.$map = T.$m = (array, f) ->
-    template_array = _.map(array, f)
+    template_array = map(array, f)
     (template_data) ->
       evaluate template_array, template_data
 
@@ -309,7 +319,7 @@ module.exports = (_) ->
 
   # magic closure wrapper
   T.$closure = T.$c = (names, f, context) ->
-    f.apply context ? @, _.map(names.split(' '), (n) -> T[n])
+    f.apply context ? @, map(names.split(' '), (n) -> T[n])
 
   # export main object
   T

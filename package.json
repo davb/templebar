@@ -1,7 +1,7 @@
 {
   "name": "templebar",
   "preferGlobal": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Davide Bonapersona <me@davb.me>",
   "description": "a compact template engine for CoffeeScript",
   "scripts": {},
