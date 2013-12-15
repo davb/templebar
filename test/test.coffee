@@ -70,6 +70,7 @@ it 'supports array from template data', ->
   temp = T.ul T.$map T.$v('ids'), (id) -> T.br({id: id})
   temp({ids: [1,2]}).should.equal '<ul><br id="1"/><br id="2"/></ul>'
 
+
 # $var / $v
 
 it 'defers to evaluation time', ->
@@ -80,6 +81,10 @@ it 'defers to evaluation time', ->
 it 'supports path to nested properties', ->
   temp = T.div(T.$v('a.b'))
   temp({a: {b: 1}}).should.equal '<div>1</div>'
+
+it 'passes template data to nested tags', ->
+  temp = T.d T.p T.$v('a')
+  temp({a: 1}).should.equal '<div><p>1</p></div>'
 
 it 'escapes HTML', ->
   temp = T.d(T.$v('a'))

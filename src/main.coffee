@@ -86,13 +86,22 @@ module.exports = (_) ->
   # null or undefined elements are ignored
   # returns the modified array
   push_joining = (array, el, sep = '') ->
-    if el?
-      if array.length && stringifyable(last(array)) && stringifyable(el)
-        array[array.length - 1] += (sep + el)
-      else
-        push array, sep if array.length
-        push array, el
-    array
+    # helper function to push a single element into the array
+    _push_joining = (e) ->
+      stringifyable_e = stringifyable(e)
+      if e? && (!stringifyable_e || (e + '').length)
+        if array.length && stringifyable(last(array)) && stringifyable_e
+          # concatenate element with the last element of the array
+          array[array.length - 1] += ('' + e)
+        else
+          # push element at the end of the array
+          push array, e
+      # return the array
+      array
+    # push the separator
+    _push_joining sep if array.length
+    # push the actual element and return array
+    _push_joining el
 
 
   # at the most basic level, a template is an Array of either strings or
@@ -285,8 +294,9 @@ module.exports = (_) ->
   T.tag = (name, args...) ->
     nf = normalize args
     template_array = flatten_tree_tag name, nf[0], nf[1]
-    #console.log 'array', template_array
-    (template_data) -> evaluate template_array, template_data
+    #console.log 'array', template_array # <- inspect cached template
+    defer (template_data) ->
+      evaluate template_array, template_data
 
   # attach tag helpers for all HTML tags
   each HTML_VOID_TAGS.concat(HTML_NONVOID_TAGS), (tagname) ->
