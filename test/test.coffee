@@ -112,6 +112,14 @@ it 'supports nested paths', ->
   temp({a: {b: {c: 1}}}).should.equal '<div><div>c</div></div>'
 
 
+# magic closure wrapper
+
+it 'provides shorthands for requested methods', ->
+  temp = T.$c 'd a img', (d, a, i) ->
+    d(a(href:'link', i(src: 'url')))
+  temp().should.equal '<div><a href="link"><img src="url"/></a></div>'
+
+
 # some templates
 
 it 'compiles correctly', ->

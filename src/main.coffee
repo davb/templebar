@@ -307,5 +307,9 @@ module.exports = (_) ->
     defer (template_data) ->
       f.call(@, template_data)
 
+  # magic closure wrapper
+  T.$closure = T.$c = (names, f, context) ->
+    f.apply context ? @, _.map(names.split(' '), (n) -> T[n])
+
   # export main object
   T
